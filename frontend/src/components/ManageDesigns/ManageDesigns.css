@@ -1,0 +1,17 @@
+
+
+.user-message {
+    background-color: var(--blue-accent-color);
+    color: white;
+    font-size: 20px;
+    padding: 10px;
+    margin: 0 0 10px 0;
+}
+
+.error-message {
+    background-color: var(--red-accent-color);
+    color: white;
+    font-size: 20px;
+    padding: 10px;
+    margin: 0 0 10px 0;
+}

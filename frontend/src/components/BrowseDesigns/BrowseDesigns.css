@@ -1,0 +1,32 @@
+.card-title {
+    text-shadow: 2px 2px 3px rgba(0,0,0,0.7);
+    font-family: 'Zilla Slab';
+    font-weight: 700;
+    padding: 24px 24px 10px 24px !important;
+    font-size: 26px !important;
+}
+
+.card-category {
+    margin-top: 10px;
+}
+
+.card-qualifier {
+    padding-right: 5px;
+    font-weight: 600;
+
+}
+
+.small-right-margin {
+    margin-right: 5px !important;
+}
+
+.rate-chip {
+    margin-right: 0 !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.rate-chip i {
+    padding-right: 2px;
+}

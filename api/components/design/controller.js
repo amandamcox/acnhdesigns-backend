@@ -29,12 +29,14 @@ const getDesigns = async (req, res, next) => {
 		const allDesigns = await getDesignsService()
 		let results = [...allDesigns]
 		if (category) {
-			results = results.filter(
-				result => result.designCategory === category
+			results = results.filter(result =>
+				result.designCategory.includes(category.toLowerCase())
 			)
 		}
 		if (creatorId) {
-			results = results.filter(result => result.creatorId === creatorId)
+			results = results.filter(
+				result => result.creatorId === creatorId.toLowerCase()
+			)
 		}
 		res.json(results)
 	} catch (error) {

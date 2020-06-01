@@ -11,7 +11,9 @@ const getDesignsService = async () => {
 
 const getDesignsByUserService = async userId => {
 	try {
-		return await User.findById(userId).populate('designs')
+		return await User.findById(userId, { select: 'designs' }).populate(
+			'designs'
+		)
 	} catch (error) {
 		throw error
 	}
@@ -20,9 +22,12 @@ const getDesignsByUserService = async userId => {
 const createNewDesignService = async (req, userId) => {
 	try {
 		const user = await User.findById(userId)
+		const lowercaseCategories = req.category.map(category =>
+			category.toLowerCase()
+		)
 		const designObj = new Design({
 			designName: req.name,
-			designCategory: req.category.toLowerCase(),
+			designCategory: lowercaseCategories,
 			creatorId: req.creatorId.toLowerCase(),
 			customDesignId: req.designId.toLowerCase(),
 			imageUrl: req.image,

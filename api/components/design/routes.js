@@ -12,7 +12,7 @@ const {
 const { upload } = require('../../../config/awsS3Config')
 
 designRouter.get('/', getDesigns)
-designRouter.get('/:userId', getDesignsForUser)
+designRouter.get('/user', getDesignsForUser)
 designRouter.post('/', createNewDesign)
 designRouter.post('/upload', upload.single('designImage'), uploadImage)
 designRouter.post('/bulk', bulkNewDesigns)

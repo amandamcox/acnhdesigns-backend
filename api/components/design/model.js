@@ -12,7 +12,6 @@ const designSchema = new Schema({
 	},
 	creatorId: {
 		type: String,
-		required: true,
 	},
 	customDesignId: {
 		type: String,
@@ -29,9 +28,11 @@ const designSchema = new Schema({
 	},
 	upvotes: {
 		type: Number,
+		default: 0,
 	},
 	downvotes: {
 		type: Number,
+		default: 0,
 	},
 	user: {
 		type: Schema.Types.ObjectId,

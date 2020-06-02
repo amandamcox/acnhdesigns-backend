@@ -28,7 +28,7 @@ const createNewDesignService = async (req, userId) => {
 		const designObj = new Design({
 			designName: req.name,
 			designCategory: lowercaseCategories,
-			creatorId: req.creatorId.toLowerCase(),
+			creatorId: req.creatorId,
 			customDesignId: req.designId.toLowerCase(),
 			imageUrl: req.image,
 			user: user._id,

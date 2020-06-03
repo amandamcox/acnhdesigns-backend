@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const {
 	getDesignsService,
 	getDesignsByUserService,
+	getDesignsBySearchService,
 	createNewDesignService,
 	bulkNewDesignService,
 	deleteDesignService,
@@ -38,6 +39,16 @@ const getDesigns = async (req, res, next) => {
 				result => result.creatorId === creatorId.toLowerCase()
 			)
 		}
+		res.json(results)
+	} catch (error) {
+		next(error)
+	}
+}
+
+const getDesignsBySearch = async (req, res, next) => {
+	try {
+		const { q } = req.query
+		const results = await getDesignsBySearchService(q)
 		res.json(results)
 	} catch (error) {
 		next(error)
@@ -136,6 +147,7 @@ const updateVotes = async (req, res, next) => {
 module.exports = {
 	getDesigns,
 	getDesignsForUser,
+	getDesignsBySearch,
 	createNewDesign,
 	bulkNewDesigns,
 	deleteDesign,

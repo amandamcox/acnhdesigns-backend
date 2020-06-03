@@ -9,6 +9,14 @@ const getDesignsService = async () => {
 	}
 }
 
+const getDesignsBySearchService = async query => {
+	try {
+		return await Design.find({ designName: new RegExp(query, 'i') })
+	} catch (error) {
+		throw error
+	}
+}
+
 const getDesignsByUserService = async userId => {
 	try {
 		return await User.findById(userId, { select: 'designs' }).populate(
@@ -114,6 +122,7 @@ const updateVotesService = async (id, vote) => {
 module.exports = {
 	getDesignsService,
 	getDesignsByUserService,
+	getDesignsBySearchService,
 	createNewDesignService,
 	bulkNewDesignService,
 	deleteDesignService,

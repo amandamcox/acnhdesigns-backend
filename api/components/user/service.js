@@ -16,9 +16,9 @@ const getUserByIdService = async userId => {
 	}
 }
 
-const getUserByUsernameService = async username => {
+const getUserByEmailService = async email => {
 	try {
-		return await User.findOne({ username })
+		return await User.findOne({ email })
 	} catch (error) {
 		throw error
 	}
@@ -27,7 +27,7 @@ const getUserByUsernameService = async username => {
 const createNewUserService = async (req, passwordHash) => {
 	try {
 		const userObj = new User({
-			username: req.username,
+			email: req.email,
 			name: req.name,
 			passwordHash,
 		})
@@ -41,6 +41,6 @@ const createNewUserService = async (req, passwordHash) => {
 module.exports = {
 	getAllService,
 	getUserByIdService,
-	getUserByUsernameService,
+	getUserByEmailService,
 	createNewUserService,
 }

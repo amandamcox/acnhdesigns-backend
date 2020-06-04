@@ -3,14 +3,14 @@ const jwt = require('jsonwebtoken')
 const {
 	getAllService,
 	getUserByIdService,
-	getUserByUsernameService,
+	getUserByEmailService,
 	createNewUserService,
 } = require('./service')
 
 // Helper for tokens
-const createToken = (username, id) => {
+const createToken = (email, id) => {
 	const tokenData = {
-		username,
+		email,
 		id,
 	}
 	return jwt.sign(tokenData, process.env.SECRET)
@@ -39,10 +39,10 @@ const createNewUser = async (req, res, next) => {
 		const saltRounds = 10
 		const passwordHash = await bcrypt.hash(req.body.password, saltRounds)
 		const savedUser = await createNewUserService(req.body, passwordHash)
-		const token = createToken(savedUser.username, savedUser._id)
+		const token = createToken(savedUser.email, savedUser._id)
 		res.status(200).send({
 			token,
-			username: savedUser.username,
+			email: savedUser.email,
 			name: savedUser.name,
 		})
 	} catch (error) {
@@ -52,20 +52,20 @@ const createNewUser = async (req, res, next) => {
 
 const loginUser = async (req, res, next) => {
 	try {
-		const user = await getUserByUsernameService(req.body.username)
+		const user = await getUserByEmailService(req.body.email)
 		const passwordCorrect =
 			user === null
 				? false
 				: await bcrypt.compare(req.body.password, user.passwordHash)
 		if (!(user && passwordCorrect)) {
 			return res.status(401).json({
-				error: 'Invalid username or password',
+				error: 'Invalid email or password',
 			})
 		}
-		const token = createToken(user.username, user._id)
+		const token = createToken(user.email, user._id)
 		res.status(200).send({
 			token,
-			username: user.username,
+			email: user.email,
 			name: user.name,
 		})
 	} catch (error) {

@@ -21,4 +21,18 @@ const upload = multer({
 	}),
 })
 
-module.exports = { upload }
+const deleteImage = async (error, designUrl) => {
+	const keyIndex = designUrl.imageUrl.indexOf('design-')
+	const s3ImageKey = designUrl.imageUrl.slice(keyIndex)
+	s3.deleteObject(
+		{
+			Bucket: process.env.AWS_IMG_BUCKET,
+			Key: s3ImageKey,
+		},
+		function (error, data) {
+			if (error) return error
+		}
+	)
+}
+
+module.exports = { upload, deleteImage }

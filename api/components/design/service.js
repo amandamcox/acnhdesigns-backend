@@ -1,5 +1,6 @@
 const Design = require('./model')
 const User = require('../user/model')
+const { deleteImage } = require('../../../config/awsS3Config')
 
 const getDesignsService = async () => {
 	try {
@@ -76,6 +77,9 @@ const bulkNewDesignService = async (designsArr, userId) => {
 
 const deleteDesignService = async id => {
 	try {
+		const deleteImageRes = await Design.findById(id, 'imageUrl').exec(
+			deleteImage
+		)
 		return await Design.findByIdAndDelete(id)
 	} catch (error) {
 		throw error

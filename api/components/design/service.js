@@ -2,17 +2,47 @@ const Design = require('./model')
 const User = require('../user/model')
 const { deleteImage } = require('../../../config/awsS3Config')
 
-const getDesignsService = async () => {
+const paginateResults = async (filter = {}, page = 1, limit = 10) => {
+	const skip = limit * (page - 1)
+	let results = {}
+
 	try {
-		return await Design.find({})
+		results.totalCount = await Design.find(filter).countDocuments()
+		results.currentPage = page
+		results.totalPages = Math.ceil(results.totalCount / limit)
+		results.results = await Design.find(filter, null, {
+			skip,
+			limit
+		}).sort('-upvotes')
+		return results
 	} catch (error) {
 		throw error
 	}
 }
 
-const getDesignsBySearchService = async query => {
+const getDesignsService = async (page, limit, category = null) => {
 	try {
-		return await Design.find({ designName: new RegExp(query, 'i') })
+		if (category)
+			return await paginateResults(
+				{
+					designCategory: category
+				},
+				page,
+				limit
+			)
+		else return await paginateResults({}, page, limit)
+	} catch (error) {
+		throw error
+	}
+}
+
+const getDesignsBySearchService = async (query, page, limit) => {
+	try {
+		return await paginateResults(
+			{ designName: new RegExp(query, 'i') },
+			page,
+			limit
+		)
 	} catch (error) {
 		throw error
 	}
@@ -40,7 +70,7 @@ const createNewDesignService = async (req, userId) => {
 			creatorId: req.creatorId,
 			customDesignId: req.designId.toLowerCase(),
 			imageUrl: req.image,
-			user: user._id,
+			user: user._id
 		})
 		const savedDesign = await designObj.save()
 		user.designs = [...user.designs, savedDesign._id]
@@ -60,11 +90,11 @@ const bulkNewDesignService = async (designsArr, userId) => {
 				designCategory: design.category.toLowerCase(),
 				creatorId: design.creatorId.toLowerCase(),
 				customDesignId: design.designId.toLowerCase(),
-				user: user._id,
+				user: user._id
 			})
 		})
 		const savedBulkDesigns = await Design.insertMany(bulkDesignObj, {
-			ordered: false,
+			ordered: false
 		})
 		const savedBulkDesignIds = savedBulkDesigns.map(design => design._id)
 		user.designs = [...user.designs, ...savedBulkDesignIds]
@@ -90,7 +120,7 @@ const updateDesignService = async (id, changes) => {
 	try {
 		return await Design.findByIdAndUpdate(id, changes, {
 			new: true,
-			select: '-user -__v',
+			select: '-user -__v'
 		})
 	} catch (error) {
 		throw error
@@ -105,7 +135,7 @@ const updateVotesService = async (id, vote) => {
 				{ $inc: { upvotes: 1 } },
 				{
 					new: true,
-					select: '-user -__v',
+					select: '-user -__v'
 				}
 			)
 		} else if (vote === 'down') {
@@ -114,7 +144,7 @@ const updateVotesService = async (id, vote) => {
 				{ $inc: { downvotes: 1 } },
 				{
 					new: true,
-					select: '-user -__v',
+					select: '-user -__v'
 				}
 			)
 		}
@@ -131,5 +161,5 @@ module.exports = {
 	bulkNewDesignService,
 	deleteDesignService,
 	updateDesignService,
-	updateVotesService,
+	updateVotesService
 }

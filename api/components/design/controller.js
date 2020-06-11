@@ -7,7 +7,7 @@ const {
 	bulkNewDesignService,
 	deleteDesignService,
 	updateDesignService,
-	updateVotesService,
+	updateVotesService
 } = require('./service')
 
 // Helper for validating tokens from requests
@@ -26,20 +26,11 @@ const validateToken = req => {
 
 const getDesigns = async (req, res, next) => {
 	try {
-		const { category, creatorId } = req.query
-		const allDesigns = await getDesignsService()
-		let results = [...allDesigns]
-		if (category) {
-			results = results.filter(result =>
-				result.designCategory.includes(category.toLowerCase())
-			)
-		}
-		if (creatorId) {
-			results = results.filter(
-				result => result.creatorId === creatorId.toLowerCase()
-			)
-		}
-		res.json(results)
+		let { page, limit, category } = req.query
+		if (page) page = parseInt(page)
+		if (limit) limit = parseInt(limit)
+		const allDesigns = await getDesignsService(page, limit, category)
+		res.json(allDesigns)
 	} catch (error) {
 		next(error)
 	}
@@ -47,8 +38,10 @@ const getDesigns = async (req, res, next) => {
 
 const getDesignsBySearch = async (req, res, next) => {
 	try {
-		const { q } = req.query
-		const results = await getDesignsBySearchService(q)
+		let { q, page, limit } = req.query
+		if (page) page = parseInt(page)
+		if (limit) limit = parseInt(limit)
+		const results = await getDesignsBySearchService(q, page, limit)
 		res.json(results)
 	} catch (error) {
 		next(error)
@@ -125,7 +118,7 @@ const uploadImage = (req, res, next) => {
 	try {
 		res.json({
 			status: 'Upload Successful',
-			imageLocation: req.file.location,
+			imageLocation: req.file.location
 		})
 	} catch (error) {
 		next(error)
@@ -153,5 +146,5 @@ module.exports = {
 	deleteDesign,
 	updateDesign,
 	uploadImage,
-	updateVotes,
+	updateVotes
 }

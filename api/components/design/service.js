@@ -7,9 +7,7 @@ const paginateResults = async (filter = {}, page = 1, limit = 10) => {
 	let results = {}
 
 	try {
-		results.totalCount = await Design.find(filter)
-			.estimatedDocumentCount()
-			.exec()
+		results.totalCount = await Design.find(filter).countDocuments()
 		results.currentPage = page
 		results.totalPages = Math.ceil(results.totalCount / limit)
 		results.results = await Design.find(filter, null, {
@@ -18,7 +16,7 @@ const paginateResults = async (filter = {}, page = 1, limit = 10) => {
 		}).sort('-upvotes')
 		return results
 	} catch (error) {
-		res.status(500).json({ message: error.message })
+		throw error
 	}
 }
 
@@ -38,9 +36,13 @@ const getDesignsService = async (page, limit, category = null) => {
 	}
 }
 
-const getDesignsBySearchService = async query => {
+const getDesignsBySearchService = async (query, page, limit) => {
 	try {
-		return await paginateResults({ designName: new RegExp(query, 'i') })
+		return await paginateResults(
+			{ designName: new RegExp(query, 'i') },
+			page,
+			limit
+		)
 	} catch (error) {
 		throw error
 	}

@@ -26,7 +26,9 @@ const validateToken = req => {
 
 const getDesigns = async (req, res, next) => {
 	try {
-		const { page, limit, category } = req.query
+		let { page, limit, category } = req.query
+		if (page) page = parseInt(page)
+		if (limit) limit = parseInt(limit)
 		const allDesigns = await getDesignsService(page, limit, category)
 		res.json(allDesigns)
 	} catch (error) {
@@ -36,8 +38,10 @@ const getDesigns = async (req, res, next) => {
 
 const getDesignsBySearch = async (req, res, next) => {
 	try {
-		const { q } = req.query
-		const results = await getDesignsBySearchService(q)
+		let { q, page, limit } = req.query
+		if (page) page = parseInt(page)
+		if (limit) limit = parseInt(limit)
+		const results = await getDesignsBySearchService(q, page, limit)
 		res.json(results)
 	} catch (error) {
 		next(error)
